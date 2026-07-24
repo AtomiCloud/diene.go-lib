@@ -11,30 +11,18 @@ plugin chain. Do not add a standalone `.gitlint` file.
 
 ## Build-order boundary
 
-The workspace baseline registers the future commands now. The full `releaser`
-binary is published by `tools/releaser` at C2 step 2p; until that fold lands a
-temporary Nix-shell bootstrap shim stands in for the release surface only:
+The workspace baseline registers the future commands now, but the `releaser`
+binary is published by `tools/releaser` at C2 step 2p. Until that fold lands:
 
 - the repository-owned validators check the configuration schema, plugin chain,
   and exact D3 type vocabulary;
-- the `.#releaser` shell exposes a `releaser` command that delegates **only the
-  release surface** to `sg` — `releaser release -c <cfg>` dispatches to
-  `sg release -c <cfg>` — so `scripts/ci/release.sh` runs without the earlier
-  missing-executable failure; the release script pins the **npm** installer
-  (`-i npm`) and the shell provides `nodejs`, so `sg` resolves the pinned
-  `semantic-release` **package** rather than a version-suffixed **binary name**
-  (which a runner's incidental yarn/pnpm runtime would fail to find);
-- `releaser lint-commit` and `releaser conventions` remain explicitly deferred:
-  `sg` has no equivalent subcommand, so the commit-msg hook stays registered as
-  `releaser lint-commit -c atomi_release.yaml` but is not yet functional, and
-  the generated `docs/developer/CommitConventions.md` keeps its bootstrap
-  notice; and
-- `sg` is present only as that temporary bootstrap dependency, reached through
-  the `releaser` release surface rather than invoked directly.
+- the commit-msg hook remains registered as
+  `releaser lint-commit -c atomi_release.yaml`;
+- release execution is not considered locally available; and
+- `sg` remains only as a temporary Nix-shell bootstrap dependency.
 
-After step 2p, `tools/releaser` replaces the bootstrap shim and every registered
-command — `lint-commit`, `conventions`, and `release` — becomes executable under
-the single `releaser` name.
+After step 2p, `releaser` replaces that bootstrap dependency and the registered
+commit and release commands become executable.
 
 ## Commands
 
@@ -84,7 +72,4 @@ so the vocabularies cannot drift independently.
    changelog and generated files, creates the tag, and publishes the GitHub
    release.
 
-The release surface is executable pre-2p through the bootstrap shim
-(`releaser release` dispatches to `sg release`); the `tools/releaser` fold at C2
-step 2p replaces the shim with the first-class binary and lifts the remaining
-`lint-commit` and `conventions` deferrals.
+Actual release execution remains gated on the C2 step-2p `tools/releaser` fold.

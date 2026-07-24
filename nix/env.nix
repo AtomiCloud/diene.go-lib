@@ -67,15 +67,9 @@ with packages;
 
   # ### workspace-releaser-bootstrap
   # #### source: workspace
-  # C2: the `releaser` command is a bootstrap alias over `sg`, retained only
-  # until tools/releaser is published at step 2p. It must be present under the
-  # `releaser` name because scripts/ci/release.sh invokes `releaser release`.
-  # `nodejs` guarantees a pinned node/npm so `sg` selects the npm runtime
-  # (release.sh pins `-i npm`); without it the runner's incidental yarn/pnpm is
-  # chosen and fails to resolve the version-suffixed `semantic-release` binary.
+  # C2: sg is retained only until tools/releaser is published at step 2p.
   releaser = [
-    nodejs
-    releaser
+    sg
   ];
 
   # ### nix-root-system

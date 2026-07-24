@@ -5,7 +5,7 @@
   pkgs-unstable,
 }:
 let
-  cyanprintVersion = "4.8.0";
+  cyanprintVersion = "4.9.0";
   cyanprintSystem = pkgs.stdenv.hostPlatform.system;
   cyanprintPlatform =
     ({
@@ -16,10 +16,10 @@ let
     }).${cyanprintSystem};
   cyanprintHash =
     ({
-      x86_64-linux = "sha256-lxibv7rqcp0rQtvWb41ifxA+ORwt8yiSKM0NaRJmt1w=";
-      aarch64-linux = "sha256-XDx6CtFS4doSeswYWyTPT0GHPDcW8tb6YEzd5QJuv78=";
-      x86_64-darwin = "sha256-xGoTSpMkXAKdUm6NDDN75yfHu25nMgXP1hiIfGb9fvo=";
-      aarch64-darwin = "sha256-7xLzKKCK5UiU1saHf8l1z1UuInQm1CTjowIlwpGRM7Y=";
+      x86_64-linux = "sha256-z5whvbKPJTgyR5qWeYefN7NuTKY1pWaRkYDnyyaNG9k=";
+      aarch64-linux = "sha256-SrhazRJbeK3vJHGvv0TwKHdz/ulqZM04qMtKgX0AJgA=";
+      x86_64-darwin = "sha256-XIolxZN+KVf/Ui5/rQjg+k3OXLrbJuGGxh6iYkki+/k=";
+      aarch64-darwin = "sha256-xugPBTO6CTixUjpq9PPq2WOQySci735gfuOXZSn75Ew=";
     }).${cyanprintSystem};
   cyanprint = pkgs.stdenvNoCC.mkDerivation {
     pname = "cyanprint";
@@ -120,7 +120,6 @@ let
           kubeconform
           kubernetes-helm
           kyverno
-          nodejs
           pre-commit
           ripgrep
           shellcheck
@@ -130,32 +129,6 @@ let
           ;
       }
     );
-
-    # ### workspace-releaser-bootstrap
-    # #### source: workspace
-    # C2: the `releaser` command is bootstrapped as a thin alias over `sg`
-    # (semantic-generator) until tools/releaser is published at step 2p. The
-    # release script and commit hooks invoke the `releaser` command name, so the
-    # bootstrap must materialise an executable of that exact name on the shell
-    # PATH; `sg release -c <cfg>` matches the `releaser release -c <cfg>` surface.
-    releaser-bootstrap = {
-      releaser = pkgs.writeShellScriptBin "releaser" ''
-        exec ${atomi.sg}/bin/sg "$@"
-      '';
-    };
-
-    # ### workspace-releaser-argv-fixture
-    # #### source: workspace
-    # Test-only Yarn Classic (yarn 1.x) from the pinned nixpkgs, used solely by
-    # the RB-339 hermetic argv regression fixture to reproduce the second defect:
-    # `yarn exec semantic-release@23.0.1` failing because Yarn resolves the exec
-    # ARG as a binary NAME. This is a package output ONLY; it is deliberately NOT
-    # added to any devShell buildInputs (least of all `.#releaser`) so the
-    # production release runtime stays npm-only. The probe injects this store
-    # path into the fixture out-of-band via RB339_YARN_CLASSIC_BIN.
-    releaser-argv-fixture = {
-      yarn-classic = pkgs-2605.yarn;
-    };
 
     # ### nix-unstable
     # #### source: main
@@ -171,11 +144,4 @@ let
   };
 in
 with all;
-atomipkgs
-// nix-2605
-// releaser-bootstrap
-// releaser-argv-fixture
-// nix-unstable
-// root
-// go-base
-// go-lib
+atomipkgs // nix-2605 // nix-unstable // root // go-base // go-lib

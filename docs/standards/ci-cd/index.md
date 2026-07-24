@@ -22,8 +22,8 @@ CI script.
 
 ## Reusable workflows
 
-- `reusable-precommit.yaml` runs `scripts/ci/pre-commit.sh` in `.#ci`.
-- `reusable-release.yaml` runs `scripts/ci/release.sh` in `.#releaser`.
+- `⚡reusable-precommit.yaml` runs `scripts/ci/pre-commit.sh` in `.#ci`.
+- `⚡reusable-release.yaml` runs `scripts/ci/release.sh` in `.#releaser`.
 
 `AtomiCloud/actions.setup-nix@v3` checks out the repository, so do not add an
 adjacent `actions/checkout`.
@@ -51,7 +51,5 @@ Use the same entry points as CI:
 nix develop .#ci -c ./scripts/ci/pre-commit.sh
 ```
 
-Release execution is wired now: before the C2 step-2p `tools/releaser` fold the
-`.#releaser` shell provides a bootstrap `releaser` command that delegates only
-the release surface to `sg`, so `scripts/ci/release.sh` runs. The first-class
-binary — adding `lint-commit` and `conventions` — still awaits that fold.
+Release execution is wired now but awaits the C2 step-2p `tools/releaser` fold;
+the workspace does not claim a working `releaser` binary before then.
