@@ -3,7 +3,7 @@ module github.com/AtomiCloud/diene.go-lib
 go 1.26.0
 
 require (
-	github.com/redis/go-redis/v9 v9.21.0
+	github.com/redis/go-redis/v9 v9.22.0
 	github.com/testcontainers/testcontainers-go v0.43.0
 )
 
